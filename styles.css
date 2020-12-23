@@ -7,6 +7,30 @@ html, body {
     background-color: #2f5a8f;
 }
 
+div {
+    position: absolute;
+    top: 30px;
+    left: calc(50% - 90px);
+    width: 180px;
+    margin: 0 auto;
+}
+
+button {
+    display: block;
+    width: 180px;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    color: #2f5a8f;
+    background-color: #fafafa;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #d1dded;
+}
+
 #canvas {
     display: block;
     margin: 100px auto;
