@@ -2,14 +2,39 @@ class SnowFlakeGenerator {
     canvas = document.getElementById('canvas');
     context = this.canvas.getContext('2d');
     snowFlakeColor = 'white';
-    baseLineLength = 150;
-    diagonalLineLength = 200;
-    longLineLength = 50;
-    shortLineLength = 10;
-    step = 25;
     center = {x: 400, y: 400};
+    minBaseLineLength = 180;
+    minDiagonalLineLength = 250;
+    minShortLineLength = 5;
+    minLongLineLength = 40;
+    minExtraLongLineLength = 60;
+    minStep = 20;
+    minIterations = 16;
+    baseLineDiff = 50;
+    diagonalLineDiff = 70;
+    shortLineDiff = 10;
+    longLineDiff = 20;
+    stepDiff = 15;
+    iterationDiff = 5;
+    baseLineLength;
+    diagonalLineLength;
+    longLineLength;
+    extraLongLineLength;
+    shortLineLength;
+    step;
+    iterations;
     nextLines = [];
     lines = [];
+
+    getRandomSizes() {
+        this.baseLineLength = this.minBaseLineLength + Math.floor(Math.random() * this.baseLineDiff);
+        this.diagonalLineLength = this.minDiagonalLineLength + Math.floor(Math.random() * this.diagonalLineDiff);
+        this.shortLineLength = this.minShortLineLength + Math.floor(Math.random() * this.shortLineDiff);
+        this.longLineLength = this.minLongLineLength + Math.floor(Math.random() * this.longLineDiff);
+        this.extraLongLineLength = this.minExtraLongLineLength + Math.floor(Math.random() * this.longLineDiff);
+        this.step = Math.max(this.minStep + Math.floor(Math.random() * this.stepDiff), this.longLineLength / 2);
+        this.iterations = this.minIterations + Math.floor(Math.random() * this.iterationDiff);
+    }
 
     drawLine(x, y, length, direction) {
         if (this.context) {
@@ -147,31 +172,41 @@ class SnowFlakeGenerator {
 
     }
 
-    doIterations(iterationNumber) {
-        this.drawBaseLines();
-        for (let i = 1; i <= iterationNumber; i++) {
-            for (const line of this.lines) {
-                for (const position of line.branchPositions) {
-                    const directions = this.getBranchDirections(line.direction);
-                    if (!position.done) {
-                        if (0 === i % 2) {
-                            this.drawLine(position.x, position.y, this.shortLineLength, directions[0]);
-                            this.drawLine(position.x, position.y, this.shortLineLength, directions[1]);
-                        } else {
-                            this.drawLine(position.x, position.y, this.longLineLength, directions[0]);
-                            this.drawLine(position.x, position.y, this.longLineLength, directions[1]);
-                        }
+    doIteration(i) {
+        if (1 === i) {
+            this.drawBaseLines();
+        }
+        for (const line of this.lines) {
+            for (const position of line.branchPositions) {
+                const directions = this.getBranchDirections(line.direction);
+                if (!position.done) {
+                    if (0 === i % 7) {
+                        this.drawLine(position.x, position.y, this.extraLongLineLength, directions[0]);
+                        this.drawLine(position.x, position.y, this.extraLongLineLength, directions[1]);
+                    } else if (0 === i % 2) {
+                        this.drawLine(position.x, position.y, this.shortLineLength, directions[0]);
+                        this.drawLine(position.x, position.y, this.shortLineLength, directions[1]);
+                    } else {
+                        this.drawLine(position.x, position.y, this.longLineLength, directions[0]);
+                        this.drawLine(position.x, position.y, this.longLineLength, directions[1]);
                     }
-                    position.done = true;
                 }
-                this.addNextBranchPosition(line);
-
+                position.done = true;
             }
-            this.lines = [...this.nextLines];
+            this.addNextBranchPosition(line);
+
+        }
+        this.lines = [...this.nextLines];
+    }
+
+    buildSnowFlake() {
+        for (let i = 1; i <= this.iterations; i++) {
+            setTimeout(() => this.doIteration(i), i * 200);
         }
     }
 
 }
 
 const snowFlakeGenerator = new SnowFlakeGenerator();
-snowFlakeGenerator.doIterations(10);
+snowFlakeGenerator.getRandomSizes();
+snowFlakeGenerator.buildSnowFlake();
