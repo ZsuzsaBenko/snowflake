@@ -3,14 +3,14 @@ class SnowFlakeGenerator {
     context = this.canvas.getContext('2d');
     snowFlakeColor = 'white';
     center = {x: 400, y: 400};
-    minBaseLineLength = 180;
+    minBaseLineLength = 250;
     minDiagonalLineLength = 250;
     minShortLineLength = 5;
     minLongLineLength = 40;
     minExtraLongLineLength = 60;
-    minStep = 20;
+    minStep = 16;
     minIterations = 16;
-    baseLineDiff = 50;
+    baseLineDiff = 70;
     diagonalLineDiff = 70;
     shortLineDiff = 10;
     longLineDiff = 20;
